@@ -48,7 +48,6 @@ class _SignUp3State extends State<SignUp3> {
     );
   }
 
-
   /*void testPrint(String username,
       String password,
       String studentName,
@@ -101,19 +100,19 @@ class _SignUp3State extends State<SignUp3> {
     }
   }*/
 
-
-
   Future<void> register(
-      String username,
-      String password,
-      String studentName,
-      String indexNumber,
-      String email,
-      String studentRole,
-      int departmentId,
-      int currentSemester,
-      ) async {
-    final Uri apiUrl = Uri.parse('http://192.168.1.10:8080/api/v1/mobile/signup');
+    String username,
+    String password,
+    String studentName,
+    String indexNumber,
+    String email,
+    String studentRole,
+    int departmentId,
+    int currentSemester,
+  ) async {
+    final Uri apiUrl =
+        Uri.parse('http://192.168.1.11:8080/api/v1/mobile/signup');
+
     Map<String, dynamic> userData = {
       'userName': username,
       'password': password,
@@ -156,7 +155,6 @@ class _SignUp3State extends State<SignUp3> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -188,7 +186,8 @@ class _SignUp3State extends State<SignUp3> {
                             child: Text(
                               "This is very easy to use and You can mark your attendance very Quickly and Easily",
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 10, color: Colors.black),
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.black),
                             ),
                           ),
                         ),
@@ -237,19 +236,16 @@ class _SignUp3State extends State<SignUp3> {
                     SizedBox(width: 20),
                     RoundButton(onTap: previousPage, icon: Icons.arrow_back),
                     Spacer(),
-
-
                     MyButtonDS(
                       onTap: () => register(
-                        _userNameTextController.text,
-                        _password.text,
-                        widget.studentName,
-                        widget.indexNumber,
-                        widget.email,
-                        widget.studentRole,
-                        widget.departmentId,
-                        widget.currentSemester
-                      ),
+                          _userNameTextController.text,
+                          _password.text,
+                          widget.studentName,
+                          widget.indexNumber,
+                          widget.email,
+                          widget.studentRole,
+                          widget.departmentId,
+                          widget.currentSemester),
                       text: "SignUp",
                       width: 100,
                     ),
@@ -257,7 +253,9 @@ class _SignUp3State extends State<SignUp3> {
                   ],
                 ),
               ),
-              SizedBox(height: screenHeight*0.05,),
+              SizedBox(
+                height: screenHeight * 0.05,
+              ),
             ],
           ),
         ),
@@ -288,5 +286,4 @@ class _SignUp3State extends State<SignUp3> {
       ),
     );
   }
-
 }
