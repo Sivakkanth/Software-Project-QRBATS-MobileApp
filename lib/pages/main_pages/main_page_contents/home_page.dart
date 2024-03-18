@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:qrbats_sp/pages/main_pages/main_page.dart';
+
 
 import '../../../components/buttons/button_dark_small.dart';
 import '../../../components/texts/TextBlue.dart';
@@ -96,6 +102,54 @@ class _HomeState extends State<Home> {
     //findLocation();
   }
 
+
+
+  Future<void> markAttendance(
+      int eventID,
+      int attendeeID,
+      double locationX,
+      double locationY
+      ) async {
+    final Uri apiUrl = Uri.parse('http://192.168.1.10:8080/api/v1/attendance/markattendance');
+    Map<String, dynamic> attendanceData = {
+      "eventID": eventID,
+      "attendeeID": attendeeID,
+      "attendanceDate": DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      "attendanceTime": DateFormat('HH:mm:ss').format(DateTime.now()),
+      "locationX": locationX,
+      "locationY": locationY
+    };
+    print(attendanceData);
+
+    try {
+      final http.Response response = await http.post(
+        apiUrl,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(attendanceData),
+      );
+
+      if (response.statusCode == 200) {
+        // Registration successful
+        print("Attendance marked successfully");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) {
+            return MainPage();
+          }),
+        );
+        print(response.body);
+      } else {
+        // Registration failed
+        print('Failed mark attendance: ${response.statusCode}');
+        // Handle error
+      }
+    } catch (error) {
+      // Catch any errors that occur during the HTTP request
+      print('Error in marking attendance: $error');
+    }
+  }
 
 
   @override
@@ -211,7 +265,7 @@ class _HomeState extends State<Home> {
                           height: 10,
                         ),
                         MyButtonDS(
-                            onTap: (){},
+                            onTap: (){markAttendance(10,20,10.1023,20.1231);},
                             text: "Mark Attendance",
                             width: 200)
                       ],
