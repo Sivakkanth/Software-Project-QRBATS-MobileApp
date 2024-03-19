@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:qrbats_sp/pages/getStart_page.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/buttons/button_dark_small.dart';
 import '../../components/buttons/round_button.dart';
 import '../../components/text_field/text_field.dart';
@@ -23,9 +23,20 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+
+  late SharedPreferences preferences;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initSharedPreference();
+  }
+  Future<void> initSharedPreference() async {
+    preferences = await SharedPreferences.getInstance();
+  }
+
   final TextEditingController _userNameTextController = TextEditingController();
   final TextEditingController _password = TextEditingController();
-  final TextEditingController _confirmPassword = TextEditingController();
 
   void previousPage() {
     Navigator.push(
@@ -36,11 +47,10 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Future<void> login(
-      String username,
-      String password,
-      ) async {
-    final Uri apiUrl = Uri.parse('http://192.168.1.10:8080/api/v1/mobile/signin');
+  Future<void> login(String username, String password) async {
+    await initSharedPreference(); // Wait for preferences to be initialized
+
+    final Uri apiUrl = Uri.parse('http://192.168.1.11:8080/api/v1/mobile/signin');
     final Map<String, dynamic> userData = {
       'userName': username,
       'password': password,
@@ -57,25 +67,28 @@ class _LoginState extends State<Login> {
 
       if (response.statusCode == 200) {
         // Registration successful
+        var jsonResponse = jsonDecode(response.body);
+        var myToken = jsonResponse['token'];
+        print(myToken);
+        preferences.setString("token", myToken);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(
-                  'Welcome to SkyTicker.'
+                  'Welcome To SkyTicker.'
               )
           ),
         );
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) {
-            return MainPage();
+            return MainPage(token: myToken);
           }),
         );
-        // Handle response as needed
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(
-                  'User name or password incorrect.'
+                  'User name or password incorrect, or you dont have an account.'
               )
           ),
         );
@@ -85,6 +98,7 @@ class _LoginState extends State<Login> {
       print('Error registering user: $error');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +113,7 @@ class _LoginState extends State<Login> {
           child: Column(
             children: [
               SizedBox(height: 25),
-              Center(child: TextBlue(text: "SignUp", fontSize: 30)),
+              Center(child: TextBlue(text: "LogIn", fontSize: 30)),
               SizedBox(height: 35),
               Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -161,8 +175,8 @@ class _LoginState extends State<Login> {
                         _userNameTextController.text,
                         _password.text,
                       ),
-                      text: "Signin",
-                      width: 100,
+                      text: "LogIn",
+                      width: screenWidth*0.35,
                     ),
                     SizedBox(width: 20),
                   ],

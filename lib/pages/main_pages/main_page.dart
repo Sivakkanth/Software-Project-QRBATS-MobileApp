@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import 'main_page_contents/home_page.dart';
 import 'main_page_contents/module_page.dart';
@@ -8,7 +9,8 @@ import 'main_page_contents/setting_page.dart';
 
 class MainPage extends StatefulWidget {
   final int pageIndex;
-  const MainPage({Key? key, this.pageIndex=0}) : super(key: key);
+  final String token;
+  const MainPage({Key? key, this.pageIndex=0, this.token = ""}) : super(key: key);
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -26,6 +28,15 @@ class _MainPageState extends State<MainPage> {
     SettingPage()
     // Add more pages as needed
   ];
+
+  late String userName;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Map<String,dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
+    userName = jwtDecodedToken["sub"];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +87,14 @@ class _MainPageState extends State<MainPage> {
                 children: [
                   Text(
                     'Sky Ticker',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                    ),
+                  ),
+                  SizedBox(height: 20,),
+                  Text(
+                    userName,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 24,

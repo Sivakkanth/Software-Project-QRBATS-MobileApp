@@ -5,9 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:qrbats_sp/pages/main_pages/main_page.dart';
-
-
+import 'package:geolocator/geolocator.dart';
 import '../../../components/buttons/button_dark_small.dart';
 import '../../../components/texts/TextBlue.dart';
 
@@ -26,60 +24,36 @@ class _HomeState extends State<Home> {
   double latitude = 0.0;
   double longitude = 0.0;
 
-  // Location
-  /*Future<void> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Request location permission
-    var status = await Permission.location.request();
-    if (status != PermissionStatus.granted) {
-      // Handle denied permissions
-      setState(() {
-        latitude = 0.0;
-        longitude = 0.0;
-      });
-      return;
-    }
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Location services are not enabled
-      setState(() {
-        latitude = 0.0;
-        longitude = 0.0;
-      });
-      return;
-    }
-
-    // Check if permission is granted
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      // Permissions are denied
-      setState(() {
-        latitude = 0.0;
-        longitude = 0.0;
-      });
-      return;
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever
-      setState(() {
-        latitude = 0.0;
-        longitude = 0.0;
-      });
-      return;
-    }
-
-    // When we reach here, permissions are granted and location services are enabled
-    Position position = await Geolocator.getCurrentPosition();
+  Future<void> getLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
     setState(() {
       latitude = position.latitude;
       longitude = position.longitude;
     });
-  }*/
+    print('Latitude: ${position.latitude}');
+    print('Longitude: ${position.longitude}');
+  }
+
+  Future<void> checkLocationPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Handle case when location permission is denied
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Handle case when location permission is permanently denied
+      return;
+    }
+
+    getLocation(); // Permission granted, get the location
+  }
+
 
 
   Future<void> scanQRCode() async {
@@ -91,14 +65,15 @@ class _HomeState extends State<Home> {
         ScanMode.QR,
       );
       debugPrint(result);
+      setState(() {
+        showQRCodeDetails = true;
+      });
     } on PlatformException {
       result = "not scan";
     }
     if (!mounted) return;
     print("THE RESULT IS $result");
-    setState(() {
-      showQRCodeDetails = true;
-    });
+
     //findLocation();
   }
 
@@ -110,7 +85,7 @@ class _HomeState extends State<Home> {
       double locationX,
       double locationY
       ) async {
-    final Uri apiUrl = Uri.parse('http://192.168.1.10:8080/api/v1/attendance/markattendance');
+    final Uri apiUrl = Uri.parse('http://192.168.1.11:8080/api/v1/attendance/markattendance');
     Map<String, dynamic> attendanceData = {
       "eventID": eventID,
       "attendeeID": attendeeID,
@@ -133,16 +108,21 @@ class _HomeState extends State<Home> {
       if (response.statusCode == 200) {
         // Registration successful
         print("Attendance marked successfully");
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) {
-            return MainPage();
-          }),
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(
+                  'Attendance marked successfully.'
+              )
+          ),
         );
+        setState(() {
+          showQRCodeDetails = false;
+        });
+
         print(response.body);
       } else {
         // Registration failed
-        print('Failed mark attendance: ${response.statusCode}');
+        print('Failed to mark attendance: ${response.statusCode}');
         // Handle error
       }
     } catch (error) {
@@ -195,23 +175,49 @@ class _HomeState extends State<Home> {
                   padding: const EdgeInsets.all(8.0),
                   child: Image(
                     image: AssetImage("lib/assets/qrcode/qrcode.png"),
-                    height: screenHeight * 0.3,
+                    height: screenHeight * 0.1,
                   ),
                 ),
               ),
               SizedBox(height: 30),
-              MyButtonDS(onTap: scanQRCode, text: "Scan QR Code", width: 200),
-              MyButtonDS(onTap: (){}, text: "find location", width: 200),
+              MyButtonDS(onTap:(){
+                checkLocationPermission();
+                scanQRCode();
+              } , text: "Scan QR Code", width: 200),
+              SizedBox(height: 10,),
+              MyButtonDS(onTap: (){checkLocationPermission();}, text: "Check Location", width: 200),
               SizedBox(height: 10),
               Column(
                 children: [
-                  Text("QRCode Details"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("latitude : "),
+                      Text(latitude.toString()),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("longitude : "),
+                      Text(longitude.toString()),
+                    ],
+                  ),
                   SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
                   if (showQRCodeDetails)
                     Column(
                       children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("QRCode Details"),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -247,25 +253,12 @@ class _HomeState extends State<Home> {
                             Text(result.split(', ')[4] ?? ""),
                           ],
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("latitude : "),
-                            Text(latitude.toString()),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("longitude : "),
-                            Text(longitude.toString()),
-                          ],
-                        ),
+
                         SizedBox(
                           height: 10,
                         ),
                         MyButtonDS(
-                            onTap: (){markAttendance(10,20,10.1023,20.1231);},
+                            onTap: (){markAttendance(10,20,latitude,longitude);},
                             text: "Mark Attendance",
                             width: 200)
                       ],
