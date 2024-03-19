@@ -21,23 +21,30 @@ class _Signup1State extends State<Signup1> {
   final _emailTextController = TextEditingController();
 
   void nextPage() {
-    if (_studentNameTextController.text != "" &&
-        _indexNumberTextController.text != "" &&
-        _emailTextController.text != "" &&
-        _indexNumberTextController.text.length == 12 &&
-        isValidEmail(_emailTextController.text))
-    //_indexNumberTextController.text == r'^EG/20\d{2}/\d{4}$'
-    {
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return SignUp2(
-          studentName: _studentNameTextController.text,
-          email: _emailTextController.text,
-          indexNumber: _indexNumberTextController.text,
-        );
-      }));
-    } else {
+    if (_studentNameTextController.text.isEmpty ||
+        _indexNumberTextController.text.isEmpty ||
+        _emailTextController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter Details..')),
+        SnackBar(content: Text('Please fill all fields.')),
+      );
+    } else if (_indexNumberTextController.text.length != 12) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter a valid index number.')),
+      );
+    } else if (!isValidEmail(_emailTextController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter a valid email.')),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) {
+          return SignUp2(
+            studentName: _studentNameTextController.text,
+            email: _emailTextController.text,
+            indexNumber: _indexNumberTextController.text,
+          );
+        }),
       );
     }
   }
@@ -107,7 +114,7 @@ class _Signup1State extends State<Signup1> {
                               SizedBox(height: 10),
                               MyTextField(
                                 controller: _indexNumberTextController,
-                                hintText: "index number",
+                                hintText: "EG/****/****",
                                 width: screenWidth * 0.8,
                                 obscureText: false,
                                 icon: Icon(Icons.numbers),

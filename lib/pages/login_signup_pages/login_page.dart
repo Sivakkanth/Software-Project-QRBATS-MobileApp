@@ -9,11 +9,7 @@ import '../../components/text_field/text_field.dart';
 import '../../components/texts/TextBlue.dart';
 import '../main_pages/main_page.dart';
 
-
-
 class Login extends StatefulWidget {
-
-
   const Login({
     Key? key,
   }) : super(key: key);
@@ -37,10 +33,11 @@ class _LoginState extends State<Login> {
   }
 
   Future<void> login(
-      String username,
-      String password,
-      ) async {
-    final Uri apiUrl = Uri.parse('http://192.168.1.10:8080/api/v1/mobile/signin');
+    String username,
+    String password,
+  ) async {
+    final Uri apiUrl =
+        Uri.parse('http://192.168.1.10:8080/api/v1/mobile/signin');
     final Map<String, dynamic> userData = {
       'userName': username,
       'password': password,
@@ -58,11 +55,7 @@ class _LoginState extends State<Login> {
       if (response.statusCode == 200) {
         // Registration successful
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(
-                  'Welcome to SkyTicker.'
-              )
-          ),
+          SnackBar(content: Text('Welcome to SkyTicker.')),
         );
         Navigator.push(
           context,
@@ -73,11 +66,7 @@ class _LoginState extends State<Login> {
         // Handle response as needed
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(
-                  'User name or password incorrect.'
-              )
-          ),
+          SnackBar(content: Text('User name or password incorrect.')),
         );
       }
     } catch (error) {
@@ -99,7 +88,7 @@ class _LoginState extends State<Login> {
           child: Column(
             children: [
               SizedBox(height: 25),
-              Center(child: TextBlue(text: "SignUp", fontSize: 30)),
+              Center(child: TextBlue(text: "SignIn", fontSize: 30)),
               SizedBox(height: 35),
               Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -117,7 +106,8 @@ class _LoginState extends State<Login> {
                             child: Text(
                               "This is very easy to use and You can mark your attendance very Quickly and Easily",
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 10, color: Colors.black),
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.black),
                             ),
                           ),
                         ),
@@ -168,7 +158,9 @@ class _LoginState extends State<Login> {
                   ],
                 ),
               ),
-              SizedBox(height: screenHeight*0.05,),
+              SizedBox(
+                height: screenHeight * 0.05,
+              ),
             ],
           ),
         ),
@@ -199,5 +191,4 @@ class _LoginState extends State<Login> {
       ),
     );
   }
-
 }

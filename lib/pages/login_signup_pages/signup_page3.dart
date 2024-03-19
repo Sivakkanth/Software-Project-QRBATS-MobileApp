@@ -247,7 +247,7 @@ class _SignUp3State extends State<SignUp3> {
                           widget.departmentId,
                           widget.currentSemester),
                       text: "SignUp",
-                      width: 100,
+                      width: 80,
                     ),
                     SizedBox(width: 20),
                   ],
