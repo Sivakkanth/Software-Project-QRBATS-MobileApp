@@ -1,14 +1,17 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:qrbats_sp/api_services/CheckStudentInfo.dart';
 import 'package:qrbats_sp/pages/login_signup_pages/signup_page2.dart';
-
-
-
+import '../../api_config/api_constants.dart';
 import '../../components/buttons/round_button.dart';
 import '../../components/text_field/text_field.dart';
 import '../../components/texts/TextBlue.dart';
+import '../../validations/SignUpInputValidations.dart';
+import '../../widgets/snackbar/custom_snackbar.dart';
 import '../getStart_page.dart';
 import '../main_pages/main_page.dart';
 import 'login_page.dart';
+import 'package:http/http.dart' as http;
 
 
 class Signup1 extends StatefulWidget {
@@ -26,24 +29,18 @@ class _Signup1State extends State<Signup1> {
 
   void nextPage() {
     if(
-    _studentNameTextController.text != "" &&
-        _indexNumberTextController.text != "" &&
-        _emailTextController.text != "" &&
-        _indexNumberTextController.text.length == 12 
-        //_indexNumberTextController.text == r'^EG/20\d{2}/\d{4}$'
+    SignUpInputValidations.validateInputs(
+      _studentNameTextController.text,
+      _indexNumberTextController.text,
+      _emailTextController.text,
+      context
+    )
     ){
       Navigator.push(context,
           MaterialPageRoute(builder: (context) {
             return SignUp2(studentName: _studentNameTextController.text,email: _emailTextController.text,indexNumber: _indexNumberTextController.text,);
           }));
     }else{
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-                'Please nter Details..'
-            )
-        ),
-      );
     }
   }
 
@@ -124,7 +121,8 @@ class _Signup1State extends State<Signup1> {
                               icon: Icon(Icons.email),
                             ),
                             SizedBox(height: 40),
-        
+
+
                           ],
                         ),
                       ),
@@ -163,7 +161,18 @@ class _Signup1State extends State<Signup1> {
                                 return MainPage();
                               }),
                             );}, child: Text("mainpage")),
-                            RoundButton(onTap: nextPage, icon: Icons.arrow_forward,),
+
+                            RoundButton(
+                              onTap: () {
+                                CheckStudentInfo.checkStudentInfo(
+                                  _emailTextController.text,
+                                  _indexNumberTextController.text,
+                                  nextPage,
+                                  context,
+                                );
+                              },
+                              icon: Icons.arrow_forward,
+                            ),
                             SizedBox(width: 20,),
                           ],
                         ),

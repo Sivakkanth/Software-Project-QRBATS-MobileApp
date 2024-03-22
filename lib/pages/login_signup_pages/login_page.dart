@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:qrbats_sp/pages/getStart_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../api_config/api_constants.dart';
 import '../../components/buttons/button_dark_small.dart';
 import '../../components/buttons/round_button.dart';
 import '../../components/text_field/text_field.dart';
@@ -50,9 +51,9 @@ class _LoginState extends State<Login> {
   Future<void> login(String username, String password) async {
     await initSharedPreference(); // Wait for preferences to be initialized
 
-    final Uri apiUrl = Uri.parse('http://192.168.1.11:8080/api/v1/mobile/signin');
+    final Uri apiUrl = Uri.parse('${ApiConstants.mobileBaseUrl}${ApiConstants.studentlogin}');
     final Map<String, dynamic> userData = {
-      'userName': username,
+      'studentUserName': username,
       'password': password,
     };
 
@@ -66,13 +67,12 @@ class _LoginState extends State<Login> {
       );
 
       if (response.statusCode == 200) {
-        // Registration successful
         var jsonResponse = jsonDecode(response.body);
         var myToken = jsonResponse['token'];
         print(myToken);
         preferences.setString("token", myToken);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
               content: Text(
                   'Welcome To SkyTicker.'
               )
@@ -86,12 +86,13 @@ class _LoginState extends State<Login> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
               content: Text(
-                  'User name or password incorrect, or you dont have an account.'
+                  'Please check user name or password.'
               )
           ),
         );
+        print(response.statusCode);
       }
     } catch (error) {
       // Catch any errors that occur during the HTTP request

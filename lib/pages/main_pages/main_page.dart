@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:qrbats_sp/pages/getStart_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'main_page_contents/home_page.dart';
 import 'main_page_contents/module_page.dart';
@@ -38,6 +40,17 @@ class _MainPageState extends State<MainPage> {
     userName = jwtDecodedToken["sub"];
   }
 
+  void _logout() async {
+    // Clear the authentication token
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove("token");
+    // Navigate to the starting page (login page)
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => OpennigPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,8 +78,7 @@ class _MainPageState extends State<MainPage> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-            },
+            onPressed: _logout,
             icon: Icon(
               Icons.logout,
               color: Color(0xFF086494),
@@ -131,9 +143,7 @@ class _MainPageState extends State<MainPage> {
             ListTile(
               leading: Icon(Icons.logout,color: Color(0xFF086494),size: 35,),
               title: Text('Logout',style: TextStyle(color: Color(0xFF086494),fontSize: 20)),
-              onTap: () {
-                Navigator.pop(context); // Close the drawer
-              },
+              onTap: _logout,
             ),
             // Add more list items as needed
           ],

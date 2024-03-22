@@ -19,10 +19,11 @@ class SignUp2 extends StatefulWidget {
 
 class _SignUp2State extends State<SignUp2> {
   String? selectedDepartment;
-  int? selectedCurrentSemester;
+  String? selectedCurrentSemester;
   String? selectedStudentRole;
 
-  final List<String> departmentList = ["DEIE", "DCOM", "DMME", "DMENA", "DCEE"];
+  final List<String> departmentList = ["Select One","DEIE", "DCOM", "DMME", "DMENA", "DCEE"];
+  final List<String> semesterList = ["Select One","1", "2", "3", "4", "5","6","7","8"];
 
   void previousPage() {
     Navigator.pop(context);
@@ -30,8 +31,8 @@ class _SignUp2State extends State<SignUp2> {
 
   void nextPage() {
     if (selectedCurrentSemester != null && selectedDepartment != null) {
-      int selectedDepartmentId = departmentList.indexOf(selectedDepartment!) + 1;
-
+      int selectedDepartmentId = departmentList.indexOf(selectedDepartment!);
+      int selectedSemester = semesterList.indexOf(selectedCurrentSemester!);
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) {
@@ -41,7 +42,7 @@ class _SignUp2State extends State<SignUp2> {
             email: widget.email,
             studentRole: "UORSTUDENT",
             departmentId: selectedDepartmentId,
-            currentSemester: selectedCurrentSemester ?? 0,
+            currentSemester: selectedSemester ?? 0,
           );
         }),
       );
@@ -102,7 +103,7 @@ class _SignUp2State extends State<SignUp2> {
                           width: screenWidth * 0.8,
                           icon: Icons.list_sharp,
                           options: departmentList,
-                          initialValue: "DEIE",
+                          initialValue: "Select One",
                           onChanged: (selectedValue) {
                             selectedDepartment = selectedValue;
                           },
@@ -114,10 +115,10 @@ class _SignUp2State extends State<SignUp2> {
                           hintText: "select one",
                           width: screenWidth * 0.8,
                           icon: Icons.list_sharp,
-                          options: List.generate(8, (index) => (index + 1).toString()),
-                          initialValue: "1",
+                          options: semesterList,
+                          initialValue: "Select One",
                           onChanged: (selectedValue) {
-                            selectedCurrentSemester = int.tryParse(selectedValue ?? "0");
+                            selectedCurrentSemester = selectedValue;
                           },
                         ),
                         SizedBox(height: 40),
