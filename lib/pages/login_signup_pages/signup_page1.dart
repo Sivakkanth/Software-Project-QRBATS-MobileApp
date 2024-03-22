@@ -13,6 +13,8 @@ import '../main_pages/main_page.dart';
 import 'login_page.dart';
 import 'package:http/http.dart' as http;
 
+import 'otp_verification_page.dart';
+
 
 class Signup1 extends StatefulWidget {
   const Signup1({super.key});
@@ -43,6 +45,31 @@ class _Signup1State extends State<Signup1> {
     }else{
     }
   }
+
+  void otpVeryficationPage() {
+    if (
+    SignUpInputValidations.validateInputs(
+      _studentNameTextController.text,
+      _indexNumberTextController.text,
+      _emailTextController.text,
+      context,
+    )
+    ) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) {
+          return OtpVerificationPage(
+            studentName: _studentNameTextController.text,
+            email: _emailTextController.text,
+            indexNumber: _indexNumberTextController.text,
+          );
+        }),
+      );
+    } else {
+      // Handle validation errors if any
+    }
+  }
+
 
   void previousPage() {
     Navigator.push(context,
@@ -167,7 +194,7 @@ class _Signup1State extends State<Signup1> {
                                 CheckStudentInfo.checkStudentInfo(
                                   _emailTextController.text,
                                   _indexNumberTextController.text,
-                                  nextPage,
+                                  otpVeryficationPage,
                                   context,
                                 );
                               },
