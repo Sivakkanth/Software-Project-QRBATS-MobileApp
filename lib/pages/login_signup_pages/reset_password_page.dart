@@ -1,33 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:qrbats_sp/components/buttons/button_dark_small.dart';
 import 'package:qrbats_sp/pages/login_signup_pages/login_page.dart';
-import 'package:qrbats_sp/pages/login_signup_pages/reset_password_page.dart';
 import '../../components/buttons/round_button.dart';
 import '../../components/text_field/text_field.dart';
 import '../../components/texts/TextBlue.dart';
-import '../getStart_page.dart';
 import '../../widgets/snackbar/custom_snackbar.dart';
+import '../getStart_page.dart';
 
-class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({Key? key}) : super(key: key);
+class ResetPasswordPage extends StatefulWidget {
+  const ResetPasswordPage({Key? key}) : super(key: key);
 
   @override
-  _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
+  _ResetPasswordPageState createState() => _ResetPasswordPageState();
 }
 
-class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-  final TextEditingController _emailController = TextEditingController();
+class _ResetPasswordPageState extends State<ResetPasswordPage> {
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   void resetPassword() {
-    // Implement password reset logic here
-    // For example, send a reset password link to the provided email
-    String email = _emailController.text;
-    // Example: Send reset password link to the provided email
-    print('Reset password link sent to $email');
-    // Show a snackbar to inform the user that the reset password link has been sent
-    CustomSnackBar.showSnackBar(context, 'Reset password link sent to $email');
+    String newPassword = _newPasswordController.text;
+    String confirmPassword = _confirmPasswordController.text;
 
-    Navigator.push(context, MaterialPageRoute(builder: (context){return ResetPasswordPage();}));
+    // Perform input validation
+    if (newPassword.isEmpty || confirmPassword.isEmpty) {
+      CustomSnackBar.showSnackBar(context, 'Please fill in all fields.');
+      return;
+    }
+
+    if (newPassword != confirmPassword) {
+      CustomSnackBar.showSnackBar(context, 'Passwords do not match.');
+      return;
+    }
+
+    // If validation passes, perform password reset logic
+    // You may call your backend API here to reset the password
+    // Example:
+    // resetPasswordApiCall(newPassword);
+
+    // Show a snackbar to inform the user that the password has been reset
+    CustomSnackBar.showSnackBar(context, 'Password reset successfully.');
   }
 
   void navigateToLoginPage() {
@@ -37,10 +48,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         return Login();
       }),
     );
-  }
-
-  void sendOTP(){
-
   }
 
   @override
@@ -60,14 +67,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   color: Colors.white,
                   child: Center(
                     child: TextBlue(
-                      text: "Forgot Password",
+                      text: "Reset Password",
                       fontSize: 25,
                     ),
                   ),
                 ),
               ),
               Expanded(
-                flex: 4,
+                flex: 8,
                 child: Container(
                   color: Colors.white,
                   child: Center(
@@ -82,33 +89,31 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             children: [
                               SizedBox(height: 30),
                               TextBlue(
-                                text: "Email Address",
+                                text: "New Password",
                                 fontSize: 20,
                               ),
                               SizedBox(height: 10),
                               MyTextField(
-                                controller: _emailController,
-                                hintText: "email",
+                                controller: _newPasswordController,
+                                hintText: "Enter new password",
                                 width: screenWidth * 0.8,
-                                obscureText: false,
-                                icon: Icon(Icons.email),
+                                obscureText: true,
+                                icon: Icon(Icons.lock),
                               ),
                               SizedBox(height: 20),
-                              MyButtonDS(onTap: sendOTP, text: "Send OTP", width: 200),
-                              SizedBox(height: 30),
                               TextBlue(
-                                text: "Enter The OTP",
+                                text: "Confirm Password",
                                 fontSize: 20,
                               ),
                               SizedBox(height: 10),
                               MyTextField(
-                                controller: _emailController,
-                                hintText: "enter OTP",
+                                controller: _confirmPasswordController,
+                                hintText: "Confirm new password",
                                 width: screenWidth * 0.8,
-                                obscureText: false,
-                                icon: Icon(Icons.lock_outline),
+                                obscureText: true,
+                                icon: Icon(Icons.lock),
                               ),
-                              SizedBox(height: 20),
+                              SizedBox(height: 40),
                             ],
                           ),
                         ),
@@ -133,12 +138,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                               icon: Icons.arrow_back,
                             ),
                             Spacer(),
-                            MyButtonDS(onTap: resetPassword, text: "Reset Password", width: 200),
-
+                            ElevatedButton(
+                              onPressed: () => resetPassword(),
+                              child: Text("Reset Password"),
+                            ),
                             SizedBox(width: 20),
                           ],
                         ),
-                        SizedBox(height: screenHeight * 0.05),
+                        SizedBox(height: screenHeight * 0.007),
                       ],
                     ),
                   ),

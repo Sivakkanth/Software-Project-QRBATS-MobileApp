@@ -132,6 +132,7 @@ class _SignUp3State extends State<SignUp3> {
                           context, // Provide the context here
                           _userNameTextController.text,
                           _password.text,
+                          _confirmPassword.text,
                           widget.studentName,
                           widget.indexNumber,
                           widget.email,

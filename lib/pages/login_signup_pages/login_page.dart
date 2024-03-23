@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:qrbats_sp/pages/getStart_page.dart';
+import 'package:qrbats_sp/pages/login_signup_pages/forgot_password_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../api_config/api_constants.dart';
+import '../../api_services/LoginService.dart';
 import '../../components/buttons/button_dark_small.dart';
 import '../../components/buttons/round_button.dart';
 import '../../components/text_field/text_field.dart';
@@ -48,56 +50,13 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Future<void> login(String username, String password) async {
-    await initSharedPreference(); // Wait for preferences to be initialized
-
-    final Uri apiUrl = Uri.parse('${ApiConstants.mobileBaseUrl}${ApiConstants.studentlogin}');
-    final Map<String, dynamic> userData = {
-      'studentUserName': username,
-      'password': password,
-    };
-
-    try {
-      final http.Response response = await http.post(
-        apiUrl,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(userData),
-      );
-
-      if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(response.body);
-        var myToken = jsonResponse['token'];
-        print(myToken);
-        preferences.setString("token", myToken);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text(
-                  'Welcome To SkyTicker.'
-              )
-          ),
-        );
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) {
-            return MainPage(token: myToken);
-          }),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text(
-                  'Please check user name or password.'
-              )
-          ),
-        );
-        print(response.statusCode);
-      }
-    } catch (error) {
-      // Catch any errors that occur during the HTTP request
-      print('Error registering user: $error');
-    }
+  void forgotPasswordPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) {
+        return ForgotPasswordPage();
+      }),
+    );
   }
 
 
@@ -157,7 +116,22 @@ class _LoginState extends State<Login> {
                           obscureText: true,
                           icon: Icon(Icons.lock),
                         ),
-                        SizedBox(height: 40),
+                        SizedBox(height: 5),
+                        Row(
+                          children: [
+                            Spacer(),
+                            TextButton(onPressed: forgotPasswordPage, child: Text(
+                              "Forgot Password?",
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Color(0xFF086494),
+                                decoration: TextDecoration.underline,
+                                decorationColor: Color(0xFF086494), // Optional: specify underline color
+                                decorationStyle: TextDecorationStyle.solid, // Optional: specify underline style
+                              ),)),
+                            SizedBox(width: 15,),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -172,12 +146,13 @@ class _LoginState extends State<Login> {
                     RoundButton(onTap: previousPage, icon: Icons.arrow_back),
                     Spacer(),
                     MyButtonDS(
-                      onTap: () => login(
+                      onTap: () => LoginService.login(
+                        context,
                         _userNameTextController.text,
                         _password.text,
                       ),
                       text: "LogIn",
-                      width: screenWidth*0.35,
+                      width: screenWidth * 0.35,
                     ),
                     SizedBox(width: 20),
                   ],

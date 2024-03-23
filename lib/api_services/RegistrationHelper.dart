@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 import '../api_config/api_constants.dart';
 import '../pages/login_signup_pages/login_page.dart';
+import '../widgets/snackbar/custom_snackbar.dart';
 
 class RegistrationHelper {
   static const String mobileBaseUrl = ApiConstants.mobileBaseUrl;
@@ -15,6 +16,7 @@ class RegistrationHelper {
       BuildContext context,
       String username,
       String password,
+      String confirmPassword,
       String studentName,
       String indexNumber,
       String email,
@@ -22,6 +24,12 @@ class RegistrationHelper {
       int departmentId,
       int currentSemester,
       ) async {
+
+    if (password != confirmPassword) {
+      // Use CustomSnackBar to show the snackbar
+      CustomSnackBar.showSnackBar(context, 'Passwords do not match.');
+      return; // Exit function if passwords don't match
+    }
     final Uri apiUrlSignup = Uri.parse('$mobileBaseUrl$studentRegisterEndpoint');
     final Uri apiUrlCheckUserName =
     Uri.parse('$mobileBaseUrl$checkStudentUserNameEndpoint');
@@ -72,12 +80,7 @@ class RegistrationHelper {
           }
         } else {
           // Username already exists, show snackbar
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Color(0xFF086494),
-              content: Text('The User Name already exists.'),
-            ),
-          );
+          CustomSnackBar.showSnackBar(context, 'The User Name already exists.');
         }
       } else {
         // Handle error if failed to check username

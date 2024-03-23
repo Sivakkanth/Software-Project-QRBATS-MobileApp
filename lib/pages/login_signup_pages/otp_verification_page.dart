@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qrbats_sp/api_services/CheckStudentInfo.dart';
+import 'package:qrbats_sp/api_services/OTPService.dart';
 import 'package:qrbats_sp/components/buttons/button_dark_small.dart';
 import 'package:qrbats_sp/pages/login_signup_pages/signup_page2.dart';
 import '../../components/buttons/round_button.dart';
@@ -31,12 +32,7 @@ class OtpVerificationPage extends StatefulWidget {
 class _OtpVerificationPageState extends State<OtpVerificationPage> {
   final TextEditingController _otpController = TextEditingController();
 
-  void verifyOtp() {
-    // Add your OTP verification logic here
-    // For example, you can compare the entered OTP with the expected OTP
-    // If they match, navigate to the next page
-    // Otherwise, show an error message
-  }
+
 
   void nextPage(){
     Navigator.push(context,
@@ -91,7 +87,21 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                                 icon: Icon(Icons.lock_outline),
                               ),
                               SizedBox(height: 40),
-                              MyButtonDS(onTap: verifyOtp, text: "Verify OTP", width: 150),
+                              MyButtonDS(
+                                  onTap: (){
+                                    OTPServoces.verifyOTP(
+                                        context,
+                                        widget.email,
+                                        _otpController.text,
+                                        nextPage
+                                    );
+                                  },
+                                  text: "Verify OTP",
+                                  width: 150),
+                              SizedBox(height: 20,),
+                              MyButtonDS(onTap:() {
+                                  OTPServoces.generateOTP(context, widget.email);
+                                }, text: "Resend OTP", width: 150),
                             ],
                           ),
                         ),

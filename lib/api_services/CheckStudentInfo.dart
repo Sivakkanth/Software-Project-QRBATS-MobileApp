@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:qrbats_sp/api_services/OTPService.dart';
 import '../api_config/api_constants.dart';
 import '../widgets/snackbar/custom_snackbar.dart';
 
@@ -56,6 +57,7 @@ class CheckStudentInfo {
             context, 'The index number already exists.');
       } else {
         function();
+        OTPServoces.generateOTP(context, email);
       }
     } catch (error) {
       print('Error: $error');

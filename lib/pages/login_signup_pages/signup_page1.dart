@@ -176,19 +176,12 @@ class _Signup1State extends State<Signup1> {
                             Spacer(),
                           ],
                         ),
-        
+
                         Row(
                           children: [
                             SizedBox(width: 20,),
                             RoundButton(onTap: previousPage,icon: Icons.arrow_back,),
                             Spacer(),
-                            ElevatedButton(onPressed: (){Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) {
-                                return MainPage();
-                              }),
-                            );}, child: Text("mainpage")),
-
                             RoundButton(
                               onTap: () {
                                 CheckStudentInfo.checkStudentInfo(

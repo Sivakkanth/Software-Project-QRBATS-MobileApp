@@ -62,87 +62,92 @@ class _SignUp2State extends State<SignUp2> {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Container(
-          height: screenHeight,
-          width: screenWidth,
-          child: Column(
-            children: [
-              SizedBox(height: 25),
-              Center(child: TextBlue(text: "SignUp", fontSize: 30)),
-              SizedBox(height: 35),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
-                  height: screenHeight * 0.65,
-                  width: screenWidth * 0.9,
-                  decoration: _buildContainerDecoration(),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
+    return WillPopScope(
+      onWillPop: () async {
+        // Disable back button
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: Container(
+            height: screenHeight,
+            width: screenWidth,
+            child: Column(
+              children: [
+                SizedBox(height: 25),
+                Center(child: TextBlue(text: "SignUp", fontSize: 30)),
+                SizedBox(height: 35),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Container(
+                    height: screenHeight * 0.65,
+                    width: screenWidth * 0.9,
+                    decoration: _buildContainerDecoration(),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
 
-                        SizedBox(height: 30),
-                        /*TextBlue(text: "Select One", fontSize: 20),
-                        _buildListInputField(
-                          hintText: "select one",
-                          width: screenWidth * 0.8,
-                          icon: Icons.list_sharp,
-                          options: ["UORSTUDENT", "OTHERS"],
-                          initialValue: "UORSTUDENT",
-                          onChanged: (selectedValue) {
-                            selectedStudentRole = selectedValue;
-                          },
-                        ),*/
-                        SizedBox(height: 40),
-                        TextBlue(text: "Department", fontSize: 20),
-                        SizedBox(height: 10),
-                        _buildListInputField(
-                          hintText: "select one",
-                          width: screenWidth * 0.8,
-                          icon: Icons.list_sharp,
-                          options: departmentList,
-                          initialValue: "Select One",
-                          onChanged: (selectedValue) {
-                            selectedDepartment = selectedValue;
-                          },
-                        ),
-                        SizedBox(height: 40),
-                        TextBlue(text: "Current Semester", fontSize: 20),
-                        SizedBox(height: 10),
-                        _buildListInputField(
-                          hintText: "select one",
-                          width: screenWidth * 0.8,
-                          icon: Icons.list_sharp,
-                          options: semesterList,
-                          initialValue: "Select One",
-                          onChanged: (selectedValue) {
-                            selectedCurrentSemester = selectedValue;
-                          },
-                        ),
-                        SizedBox(height: 40),
+                          SizedBox(height: 30),
+                          /*TextBlue(text: "Select One", fontSize: 20),
+                          _buildListInputField(
+                            hintText: "select one",
+                            width: screenWidth * 0.8,
+                            icon: Icons.list_sharp,
+                            options: ["UORSTUDENT", "OTHERS"],
+                            initialValue: "UORSTUDENT",
+                            onChanged: (selectedValue) {
+                              selectedStudentRole = selectedValue;
+                            },
+                          ),*/
+                          SizedBox(height: 40),
+                          TextBlue(text: "Department", fontSize: 20),
+                          SizedBox(height: 10),
+                          _buildListInputField(
+                            hintText: "select one",
+                            width: screenWidth * 0.8,
+                            icon: Icons.list_sharp,
+                            options: departmentList,
+                            initialValue: "Select One",
+                            onChanged: (selectedValue) {
+                              selectedDepartment = selectedValue;
+                            },
+                          ),
+                          SizedBox(height: 40),
+                          TextBlue(text: "Current Semester", fontSize: 20),
+                          SizedBox(height: 10),
+                          _buildListInputField(
+                            hintText: "select one",
+                            width: screenWidth * 0.8,
+                            icon: Icons.list_sharp,
+                            options: semesterList,
+                            initialValue: "Select One",
+                            onChanged: (selectedValue) {
+                              selectedCurrentSemester = selectedValue;
+                            },
+                          ),
+                          SizedBox(height: 40),
 
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Spacer(),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Row(
-                  children: [
-                    SizedBox(width: 20),
-                    RoundButton(onTap: previousPage, icon: Icons.arrow_back),
-                    Spacer(),
-                    RoundButton(onTap: nextPage, icon: Icons.arrow_forward),
-                    SizedBox(width: 20),
-                  ],
+                Spacer(),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Row(
+                    children: [
+                      SizedBox(width: 20),
+                      Spacer(),
+                      RoundButton(onTap: nextPage, icon: Icons.arrow_forward),
+                      SizedBox(width: 20),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: screenHeight*0.05,)
-            ],
+                SizedBox(height: screenHeight*0.05,)
+              ],
+            ),
           ),
         ),
       ),
