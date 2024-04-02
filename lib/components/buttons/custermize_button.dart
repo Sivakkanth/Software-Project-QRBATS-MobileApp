@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 
-class MyButtonSmall extends StatefulWidget {
+class ButtonCustom extends StatefulWidget {
   final Function()? onTap;
   final String text;
   final double width;
+  final Color color;
+  final double fontSize;
 
-  const MyButtonSmall({
+  const ButtonCustom({
     Key? key,
     required this.onTap,
-    required this.text, required this.width,
+    required this.text, required this.width, required this.color, required this.fontSize,
   }) : super(key: key);
 
   @override
-  _MyButtonSmallState createState() => _MyButtonSmallState();
+  _ButtonCustomState createState() => _ButtonCustomState();
 }
 
-class _MyButtonSmallState extends State<MyButtonSmall> {
+class _ButtonCustomState extends State<ButtonCustom> {
   bool _isButtonPressed = false;
 
   @override

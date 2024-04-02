@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qrbats_sp/components/buttons/button_dark_small.dart';
+import 'package:qrbats_sp/components/buttons/button_dark_large.dart';
 import 'package:qrbats_sp/pages/login_signup_pages/login_page.dart';
 import 'package:qrbats_sp/pages/login_signup_pages/reset_password_page.dart';
 import '../../components/buttons/round_button.dart';

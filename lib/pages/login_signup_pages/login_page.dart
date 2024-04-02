@@ -3,10 +3,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:qrbats_sp/pages/getStart_page.dart';
 import 'package:qrbats_sp/pages/login_signup_pages/forgot_password_page.dart';
+import 'package:qrbats_sp/pages/login_signup_pages/signup_page1.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../api_config/api_constants.dart';
 import '../../api_services/LoginService.dart';
-import '../../components/buttons/button_dark_small.dart';
+import '../../components/buttons/button_dark_large.dart';
 import '../../components/buttons/round_button.dart';
 import '../../components/text_field/text_field.dart';
 import '../../components/texts/TextBlue.dart';
@@ -59,6 +60,13 @@ class _LoginState extends State<Login> {
     );
   }
 
+  void signUpPage() {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) {
+          return Signup1();
+        }));
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +103,6 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                         ),
-                        TextBlue(text: "Student Login", fontSize: 25),
                         SizedBox(height: 30),
                         TextBlue(text: "User Name", fontSize: 20),
                         SizedBox(height: 10),
@@ -130,6 +137,19 @@ class _LoginState extends State<Login> {
                                 decorationStyle: TextDecorationStyle.solid, // Optional: specify underline style
                               ),)),
                             SizedBox(width: 15,),
+                          ],
+
+                        ),
+                        Row(
+                          children: [
+                            Spacer(),
+                            Text(
+                              "If you don't have an account? ",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 10, color: Colors.black),
+                            ),
+                            TextButton(onPressed: signUpPage, child: Text("SignUp", style: TextStyle(color: Color(0xFF086494)),)),
+                            Spacer(),
                           ],
                         ),
                       ],

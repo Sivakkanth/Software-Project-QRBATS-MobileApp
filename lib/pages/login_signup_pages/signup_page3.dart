@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qrbats_sp/api_services/RegistrationHelper.dart'; // Adjust import path as needed
-import '../../components/buttons/button_dark_small.dart';
+import '../../components/buttons/button_dark_large.dart';
 import '../../components/buttons/round_button.dart';
 import '../../components/text_field/text_field.dart';
 import '../../components/texts/TextBlue.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qrbats_sp/api_services/CheckStudentInfo.dart';
 import 'package:qrbats_sp/api_services/OTPService.dart';
-import 'package:qrbats_sp/components/buttons/button_dark_small.dart';
+import 'package:qrbats_sp/components/buttons/button_dark_large.dart';
 import 'package:qrbats_sp/pages/login_signup_pages/signup_page2.dart';
 import '../../components/buttons/round_button.dart';
 import '../../components/text_field/text_field.dart';
@@ -120,9 +120,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                         Row(
                           children: [
                             SizedBox(width: 20,),
-                            RoundButton(onTap: (){}, icon: Icons.arrow_back),
                             Spacer(),
-                            MyButtonDS(onTap: nextPage, text: "Next Page", width: 150),
                             SizedBox(width: 20,),
                           ],
                         ),

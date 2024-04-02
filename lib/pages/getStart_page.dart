@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qrbats_sp/pages/login_signup_pages/login_page.dart';
 
 import '../components/buttons/button_white.dart';
 import 'login_signup_pages/signup_page1.dart';
@@ -13,7 +14,7 @@ class OpennigPage extends StatefulWidget {
 class _OpennigPageState extends State<OpennigPage> {
   void getStart() {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return Signup1();
+      return Login();
     }));
   }
 

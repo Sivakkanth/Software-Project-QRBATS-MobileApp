@@ -4,7 +4,7 @@ import 'package:qrbats_sp/pages/getStart_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'main_page_contents/home_page.dart';
-import 'main_page_contents/module_page.dart';
+import 'main_page_contents/history_page.dart';
 import 'main_page_contents/qr_scan_page.dart';
 import 'main_page_contents/setting_page.dart';
 
@@ -22,14 +22,7 @@ class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  // Add your other pages to this list
-  List<Widget> pages = [
-    Home(),
-    QRCodeScan(),
-    ModulePage(),
-    SettingPage()
-    // Add more pages as needed
-  ];
+
 
   late String userName;
   @override
@@ -37,7 +30,7 @@ class _MainPageState extends State<MainPage> {
     // TODO: implement initState
     super.initState();
     Map<String,dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
-    userName = jwtDecodedToken["sub"];
+    userName = jwtDecodedToken["studentName"];
   }
 
   void _logout() async {
@@ -53,6 +46,16 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    // Add your other pages to this list
+    List<Widget> pages = [
+      Home(),
+      QRCodeScan(token: widget.token,),
+      HistoryPage(token: widget.token,),
+      SettingPage()
+      // Add more pages as needed
+    ];
+
     return WillPopScope(
       onWillPop: () async {
         // Disable back button
@@ -177,8 +180,8 @@ class _MainPageState extends State<MainPage> {
               label: 'QR-Scan',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.my_library_books),
-              label: 'Module',
+              icon: Icon(Icons.history),
+              label: 'History',
             ),
 
             /*BottomNavigationBarItem(

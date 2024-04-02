@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
-class MyButtonSmall extends StatefulWidget {
+class MyButtonDS extends StatefulWidget {
   final Function()? onTap;
   final String text;
   final double width;
 
-  const MyButtonSmall({
+  const MyButtonDS({
     Key? key,
     required this.onTap,
     required this.text, required this.width,
   }) : super(key: key);
 
   @override
-  _MyButtonSmallState createState() => _MyButtonSmallState();
+  _MyButtonState createState() => _MyButtonState();
 }
 
-class _MyButtonSmallState extends State<MyButtonSmall> {
+class _MyButtonState extends State<MyButtonDS> {
   bool _isButtonPressed = false;
 
   @override
@@ -53,7 +53,7 @@ class _MyButtonSmallState extends State<MyButtonSmall> {
             style: TextStyle(
               color: _isButtonPressed ? Color(0xFF086494) : Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 15,
+              fontSize: 20,
             ),
           ),
         ),
