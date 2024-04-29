@@ -25,7 +25,7 @@ class MyTextField extends StatefulWidget {
 }
 
 class _MyTextFieldState extends State<MyTextField> {
-  bool _obscureText = false; // Default to false, not obscuring
+  bool _obscureText = true; // Default to false, not obscuring
 
   @override
   Widget build(BuildContext context) {

@@ -4,11 +4,11 @@ class MyButtonDS extends StatefulWidget {
   final Function()? onTap;
   final String text;
   final double width;
-
+  final double fontSize;
   const MyButtonDS({
     Key? key,
     required this.onTap,
-    required this.text, required this.width,
+    required this.text, required this.width, this.fontSize =17
   }) : super(key: key);
 
   @override
@@ -53,7 +53,7 @@ class _MyButtonState extends State<MyButtonDS> {
             style: TextStyle(
               color: _isButtonPressed ? Color(0xFF086494) : Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 20,
+              fontSize: widget.fontSize,
             ),
           ),
         ),

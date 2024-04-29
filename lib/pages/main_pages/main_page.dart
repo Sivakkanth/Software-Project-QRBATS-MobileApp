@@ -12,7 +12,7 @@ import 'main_page_contents/setting_page.dart';
 class MainPage extends StatefulWidget {
   final int pageIndex;
   final String token;
-  const MainPage({Key? key, this.pageIndex=0, this.token = ""}) : super(key: key);
+  const MainPage({Key? key, this.pageIndex=1, this.token = ""}) : super(key: key);
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -31,6 +31,7 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     Map<String,dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
     userName = jwtDecodedToken["studentName"];
+    _currentIndex = widget.pageIndex;
   }
 
   void _logout() async {
@@ -131,7 +132,7 @@ class _MainPageState extends State<MainPage> {
                   // Handle drawer item 1
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MainPage(pageIndex: 3,)),
+                    MaterialPageRoute(builder: (context) => MainPage(pageIndex: 3,token: widget.token,)),
                   );
                   // Navigator.pop(context); // Close the drawer
                 },
@@ -143,7 +144,7 @@ class _MainPageState extends State<MainPage> {
                   // Handle drawer item 2
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MainPage(pageIndex: 4,)),
+                    MaterialPageRoute(builder: (context) => MainPage(pageIndex: 3,token: widget.token,)),
                   );
                   //Navigator.pop(context); // Close the drawer
                 },

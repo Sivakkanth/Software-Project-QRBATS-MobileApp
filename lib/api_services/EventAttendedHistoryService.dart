@@ -13,6 +13,8 @@ class EventAttendedHistoryService{
     final response = await http.post(Uri.parse(apiUrl),
         headers: {'Content-Type': 'application/json'}, body: requestBody);
 
+    print(response.statusCode);
+
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
       return responseData.map((data) => AttendanceData.fromJson(data)).toList();

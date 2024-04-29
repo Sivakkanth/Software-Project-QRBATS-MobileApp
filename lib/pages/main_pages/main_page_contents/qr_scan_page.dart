@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:qrbats_sp/api_services/LocationService.dart';
 import 'package:qrbats_sp/api_services/MerkAttendanceService.dart';
 import 'package:qrbats_sp/components/buttons/button_dark_large.dart';
 import 'package:qrbats_sp/components/buttons/button_dark_small.dart';
@@ -38,6 +40,7 @@ class _QRCodeScanState extends State<QRCodeScan> {
   bool showQRCodeDetails = false;
   double latitude = 0.0;
   double longitude = 0.0;
+  double distance = 99999;
 
 
 
@@ -104,6 +107,7 @@ class _QRCodeScanState extends State<QRCodeScan> {
               qrCodeDetails = QRCodeDetails.fromJson(jsonDecode(result!));
               showQRCodeDetails = true;
             });
+            getLocationDistance(qrCodeDetails!.eventVenue, latitude, longitude);
           } catch (e) {
             debugPrint("Error parsing QR code data: $e");
           }
@@ -127,9 +131,19 @@ class _QRCodeScanState extends State<QRCodeScan> {
     }
   }
 
+  Future<void> getLocationDistance(String locationName, double latitude,double longitude) async {
+    await checkLocationPermission();
+    double calcdistance = await LocationService.findLocationDistance(locationName, latitude, longitude);
+    print("distance"+ calcdistance.toString());
+    setState(() {
+      distance = calcdistance;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -144,56 +158,121 @@ class _QRCodeScanState extends State<QRCodeScan> {
               ),
               SizedBox(height: 40),
               Container(
+                margin: EdgeInsets.only(left: screenWidth*0.07,right: screenWidth*0.07),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   border: Border(
                     top: BorderSide(
                       color: Color(0xFF086494),
-                      width: 3.0,
+                      width: 2.0,
                     ),
                     bottom: BorderSide(
                       color: Color(0xFF086494),
-                      width: 3.0,
+                      width: 2.0,
                     ),
                     left: BorderSide(
                       color: Color(0xFF086494),
-                      width: 3.0,
+                      width: 2.0,
                     ),
                     right: BorderSide(
                       color: Color(0xFF086494),
-                      width: 3.0,
+                      width: 2.0,
                     ),
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image(
-                    image: AssetImage("lib/assets/qrcode/qrcode.png"),
-                    height: screenHeight * 0.1,
-                  ),
+                child: Row(
+                  children: [
+                    Spacer(),
+                    Container(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image(
+                          image: AssetImage("lib/assets/qrcode/qrcode.png"),
+                          height: screenHeight * 0.1,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    MyButtonDS(
+                      onTap: () {
+                        checkLocationPermission();
+                        scanQRCode();
+                      },
+                      text: "Scan QR Code",
+                      width: screenWidth*0.35,
+                      fontSize: screenWidth*0.035,
+                    ),
+                    Spacer(),
+                  ],
                 ),
               ),
-              SizedBox(height: 30),
-              MyButtonDS(
-                onTap: () {
-                  checkLocationPermission();
-                  scanQRCode();
-                },
-                text: "Scan QR Code",
-                width: 200,
-              ),
+
               SizedBox(height: 10),
-              MyButtonSmall(
-                onTap: () {
-                  checkLocationPermission();
-                },
-                text: "Check Location",
-                width: 150,
-              ),
-              SizedBox(height: 10),
+
+              if (showQRCodeDetails && qrCodeDetails != null)
               Column(
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("QRCode Details"),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Event Name : "),
+                      Text(qrCodeDetails!.eventName),
+                    ],
+                  ),
+                  if(qrCodeDetails!.moduleName != null)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Module : "),
+                        Text(qrCodeDetails!.moduleName ?? ''),
+                      ],
+                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Date : "),
+                      Text(qrCodeDetails!.eventDate),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Time : "),
+                      Text(qrCodeDetails!.eventTime),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Venue : "),
+                      Text(qrCodeDetails!.eventVenue),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Spacer(),
+                      MyButtonDS(
+                        onTap: () {
+                          getLocationDistance(qrCodeDetails!.eventVenue, latitude, longitude);
+                        },
+                        text: "Refresh Location",
+                        width: screenWidth*0.4,
+                        fontSize: screenWidth*0.035,
+                      ),
+                      Spacer(),
+                    ],
+                  ),
+
+                  SizedBox(height: 10),
+                  /*Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text("latitude : "),
@@ -206,70 +285,41 @@ class _QRCodeScanState extends State<QRCodeScan> {
                       Text("longitude : "),
                       Text(longitude.toString()),
                     ],
+                  ),*/
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Distance : "),
+                      Text("${distance.toStringAsFixed(3)} m"),
+                      SizedBox(width: 10,),
+                      if(distance<=30.0)
+                        Icon(
+                          CupertinoIcons.checkmark_alt,
+                          color: Colors.green,
+                        ),
+                      if(distance>30.0)
+                        Icon(
+                          CupertinoIcons.multiply,
+                          color: Colors.red,
+                        ),
+                    ],
                   ),
-                  SizedBox(height: 20),
-                  if (showQRCodeDetails && qrCodeDetails != null)
-                    Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("QRCode Details"),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("Event Name : "),
-                            Text(qrCodeDetails!.eventName),
-                          ],
-                        ),
-                        if(qrCodeDetails!.moduleName != null)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("Module : "),
-                            Text(qrCodeDetails!.moduleName ?? ''),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("Date : "),
-                            Text(qrCodeDetails!.eventDate),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("Time : "),
-                            Text(qrCodeDetails!.eventTime),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("Venue : "),
-                            Text(qrCodeDetails!.eventVenue),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        MyButtonDS(
-                          onTap: () {
-                            markAttendance(
-                              qrCodeDetails!.eventId,
-                              studentId,
-                              latitude,
-                              longitude,
-                              context,
-                            );
-                          },
-                          text: "Mark Attendance",
-                          width: 200,
-                        ),
-                      ],
-                    ),
+                  SizedBox(height: 10),
+                  if(distance<=30.0)
+                  MyButtonDS(
+                    onTap: () {
+                      markAttendance(
+                        qrCodeDetails!.eventId,
+                        studentId,
+                        latitude,
+                        longitude,
+                        context,
+                      );
+                    },
+                    text: "Mark Attendance",
+                    width: 200,
+                  ),
+
                 ],
               ),
             ],
